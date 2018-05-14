@@ -2,50 +2,32 @@
 <meta charset="utf-8">
 <title>Treasure hunter</title>
 <body>
-<script src="./pixi/pixi.min.js"></script>
-]<script src="./src/core.js">
+<script src="./pixi/pixi.min.js">
+</script>
+<script src="./src/alias.js">
+</script>
+<script src="./src/core.js">
 </script>
 <script>
-//Aliases
-let Application = PIXI.Application,
-    Container = PIXI.Container,
-    loader = PIXI.loader,
-    resources = PIXI.loader.resources,
-    Graphics = PIXI.Graphics,
-    TextureCache = PIXI.utils.TextureCache,
-    Sprite = PIXI.Sprite,
-    Text = PIXI.Text,
-    TextStyle = PIXI.TextStyle;
-
-//Create a Pixi Application
-let app = new Application({
-    width: 512,
-    height: 512,
-    antialiasing: true,
-    transparent: false,
-    resolution: 1
-  }
-);
-
-//Add the canvas that Pixi automatically created for you to the HTML document
-document.body.appendChild(app.view);
 
 Dust.Autoload([
  'treasureHunter.json' 
 ]);
-//Define variables that might be used in more
-//than one function
+
+/*
+  Define all entities in the game
+ */
 let state, explorer, treasure, blobs, chimes, exit, player, dungeon,
     door, healthBar, message, gameScene, gameOverScene, enemies, id;
 
 function setup() {
 
-  //Make the game scene and add it to the stage
-  gameScene = new Container();
-  app.stage.addChild(gameScene);
+  gameScene = Dust.World();
 
-  //Make the sprites and add them to the `gameScene`
-  //Create an alias for the texture atlas frame ids
+  /*
+   *   Only Supports JSON ATLAS
+   */
+  
   id = resources["images/treasureHunter.json"].textures;
 
   //Dungeon
@@ -58,12 +40,7 @@ function setup() {
   gameScene.addChild(door);
 
   //Explorer
-  explorer = new Sprite(id["explorer.png"]);
-  explorer.x = 68;
-  explorer.y = gameScene.height / 2 - explorer.height / 2;
-  explorer.vx = 0;
-  explorer.vy = 0;
-  gameScene.addChild(explorer);
+  explorer = Dust.Player("explorer.png");
 
   //Treasure
   treasure = new Sprite(id["treasure.png"]);
