@@ -3,11 +3,9 @@ var Dust = {
 	StageList: [],
 	Configuration: {},
 	Resource: [],
-	Init: function()
+	WorldObjects: {},
+	Init: function(config={})
 	{
-
-		//Add the canvas that Pixi automatically created for you to the HTML document
-		document.body.appendChild(app.view);
 
 	},
 	/*
@@ -44,6 +42,30 @@ var Dust = {
 		return player;
 	},
 
+	HealthBar: function()
+	{
+				var healthBar = new Container();
+				healthBar.position.set(app.stage.width - 170, 4)
+					gameScene.addChild(healthBar);
+
+				let innerBar = new Graphics();
+				innerBar.beginFill(0x000000);
+				innerBar.drawRect(0, 0, 128, 8);
+				innerBar.endFill();
+				healthBar.addChild(innerBar);
+
+				let outerBar = new Graphics();
+				outerBar.beginFill(0xFF3300);
+				outerBar.drawRect(0, 0, 128, 8);
+				outerBar.endFill();
+				healthBar.addChild(outerBar);
+
+				healthBar.outer = outerBar;
+
+				return healthBar;
+
+	},   
+
 	/*
 	 *	@param String spritename, Object position, Array options
 	 *	@return PIXI.Sprite object
@@ -67,13 +89,15 @@ var Dust = {
 		return false;
 	},
 
-	Enemy: function(count , name , settings)
+	Enemy: function(count , name , settings={})
 	{
+		settings.custom = settings.custom || {};
 		let numberOfBlobs = count,
-		spacing = 48,
-		xOffset = 150,
-		speed = 2,
-		direction = 1;
+		spacing = settings.spacing || 48,
+		xOffset = settings.xOffset || 150,
+		speed = settings.speed || 2,
+		directionY = settings.directionY || 1,
+		directionX = settings.directionX || 1;
 
 		//An array to store all the blob monsters
 		blobs = [];
@@ -100,13 +124,18 @@ var Dust = {
 			//`-1`. `1` means the enemy will move down and `-1` means the blob will
 			//move up. Multiplying `direction` by `speed` determines the blob's
 			//vertical direction
-			blob.vy = speed * direction;
+			blob.vy = speed * directionY;
+			if(directionX)
+			{
+				blob.vx = speed * directionX;
+			}
 
 			//Reverse the direction for the next blob
-			direction *= -1;
+			directionY *= -1;
+			directionX *= -1;
 
 			if(settings.length > 1) {
-				$.extend({},blobs,settings);
+				$.extend({},blobs,settings.custom);
 			}
 			//Push the blob into the `blobs` array
 			blobs.push(blob);
@@ -116,8 +145,21 @@ var Dust = {
 
 		}
 
-		return blobs;
+		if(settings.custom.build == true && blobs.length == 1)
+		{
+			//TODO ohhhh this is the custom monster builder area :D
+			console.log("More to do here");
+		} else {
+			return blobs;
+		}
 	},
+
+	//TODO Create a custom monster controller here and return that
+	/*
+	 * @param PIXI.Sprite => Dust.Enemy
+	 * @return PIXI.Sprite => Dust.Enemy => Dust.CustomEnemy
+	 * @description
+	 * */
 
 	World: function()
 	{
@@ -139,6 +181,15 @@ var Dust = {
 	CollisionHandler: function()
 	{
 
+	},
+
+	GameOver: function(settings={})
+	{
+		gameOverScene = new Container();
+		app.stage.addChild(gameOverScene);
+		gameOverScene.visible = false;
+
+		return gameOverScene
 	},
 
 	StageShift: function(Condition)
