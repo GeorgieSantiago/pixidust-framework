@@ -6,10 +6,14 @@
 </script>
 <script src="./src/alias.js">
 </script>
+<script src="https://code.jquery.com/jquery-git.min.js">
+</script>
+<!--Dust requires JQuery-->
 <script src="./src/core.js">
 </script>
 <script>
 
+//Put your JSON ALIAS in the Autoloader
 Dust.Autoload([
  'treasureHunter.json' 
 ]);
@@ -22,75 +26,40 @@ let state, explorer, treasure, blobs, chimes, exit, player, dungeon,
 
 function setup() {
 
+  //Initiates the world object
   gameScene = Dust.World();
 
   /*
    *   Only Supports JSON ATLAS
    */
-  
+ //Still working on this one :D 
   id = resources["images/treasureHunter.json"].textures;
 
   //Dungeon
-  dungeon = new Sprite(id["dungeon.png"]);
-  gameScene.addChild(dungeon);
+  //Create a simple gameObject
+  dungeon = Dust.Objects("dungeon.png");
 
   //Door
-  door = new Sprite(id["door.png"]);
-  door.position.set(32, 0);
-  gameScene.addChild(door);
+  //Create a simple gameObject and sets the position
+  door = Dust.Objects("door.png" , {x: 32, y: 0});
 
   //Explorer
+  //Create a player! Just add the name and there you go!
   explorer = Dust.Player("explorer.png");
 
   //Treasure
-  treasure = new Sprite(id["treasure.png"]);
-  treasure.x = gameScene.width - treasure.width - 48;
-  treasure.y = gameScene.height / 2 - treasure.height / 2;
-  gameScene.addChild(treasure);
+  //This is a full example of the Dust.Objects Method. 
+  //The first param is the name of the image, the second is the
+  //position, the third are optional properties that are being merged
+  //into the PIXI.Sprite object that is returned
+  //NOTE (this) is pointing towards the PIXI.Sprite object
+  treasure = Dust.Objects('treasure.png' , {x: 80, y: 30} , {
+    x : gameScene.width - this.width - 48,
+    y : gameScene.height / 2 - this.height / 2,
+    }); 
 
-  //Make the blobs
-  let numberOfBlobs = 6,
-      spacing = 48,
-      xOffset = 150,
-      speed = 2,
-      direction = 1;
-
-  //An array to store all the blob monsters
-  blobs = [];
-
-  //Make as many blobs as there are `numberOfBlobs`
-  for (let i = 0; i < numberOfBlobs; i++) {
-
-    //Make a blob
-    let blob = new Sprite(id["blob.png"]);
-
-    //Space each blob horizontally according to the `spacing` value.
-    //`xOffset` determines the point from the left of the screen
-    //at which the first blob should be added
-    let x = spacing * i + xOffset;
-
-    //Give the blob a random y position
-    let y = randomInt(0, app.stage.height - blob.height);
-
-    //Set the blob's position
-    blob.x = x;
-    blob.y = y;
-
-    //Set the blob's vertical velocity. `direction` will be either `1` or
-    //`-1`. `1` means the enemy will move down and `-1` means the blob will
-    //move up. Multiplying `direction` by `speed` determines the blob's
-    //vertical direction
-    blob.vy = speed * direction;
-
-    //Reverse the direction for the next blob
-    direction *= -1;
-
-    //Push the blob into the `blobs` array
-    blobs.push(blob);
-
-    //Add the blob to the `gameScene`
-    gameScene.addChild(blob);
-  }
+  //CREATE ENEMYS :D
+  blobs = Dust.Enemy(10 , "blob.png" , {});
 
   //Create the health bar
   healthBar = new Container();
