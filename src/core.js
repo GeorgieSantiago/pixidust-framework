@@ -2,7 +2,6 @@ var Dust = {
 
    StageList: [],
    Configuration: {},
-
     Init: function()
     {
 
@@ -18,9 +17,16 @@ var Dust = {
     {
       //TODO change hte add method param to the Array past
       console.log(resources);
-      loader
-        .add("images/treasureHunter.json")
-        .load(setup);
+      if(resources.length >= 1)
+	  {
+	  	  for(var n = 0;n < resources.length;n++)
+		  {
+			loader.add("images/"+resources[n])
+		  }
+	  } else {
+		console.error("Please add resources to the Autoloader");
+	  } 
+        loader.load(setup);
     },
 
     Player: function()

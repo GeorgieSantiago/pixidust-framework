@@ -30,7 +30,9 @@ let app = new Application({
 //Add the canvas that Pixi automatically created for you to the HTML document
 document.body.appendChild(app.view);
 
-Dust.Autoload();
+Dust.Autoload([
+ 'treasureHunter.json' 
+]);
 //Define variables that might be used in more
 //than one function
 let state, explorer, treasure, blobs, chimes, exit, player, dungeon,
