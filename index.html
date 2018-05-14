@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+	</head>
+
+	<body>
+
+		<script src="pixi/pixi.min.js"></script>
+		<script src="src/config.js"></script>
+	<script type="text/javascript">
+		let type = "WebGL"
+		if(!PIXI.utils.isWebGLSupported()){
+			type="canvas";
+		}
+
+//		PIXI.utils.sayHello(type);
+		let app = new PIXI.Application({
+			width: 256 ,
+			height: 256,
+			antialias: true,
+			transparent: false,
+			resolution: 1
+
+		});
+		document.body.appendChild(app.view);
+
+		 packages = Milestone.autoload("treasureHunter.json");
+
+		function setup() {
+			//let sprite = new PIXI.sprite(PIXI.loader.resources[Milestone.packages[0]].texture);
+			let sprite = new PIXI.sprite(PIXI.loader.resources[''].texture)
+			console.log(sprite);
+			console.log(app.stage);
+			app.stage.addChild(sprite);
+		}
+
+	</script>
+	</body>
+</html>
