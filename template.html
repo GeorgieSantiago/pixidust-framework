@@ -18,6 +18,13 @@ Dust.Autoload([
  'treasureHunter.json' 
 ]);
 
+Dust.Init({
+  healthbar: {
+    include: true,
+    options: {}
+  }
+});
+
 /*
   Define all entities in the game
  */
@@ -54,40 +61,17 @@ function setup() {
   //into the PIXI.Sprite object that is returned
   //NOTE (this) is pointing towards the PIXI.Sprite object
   treasure = Dust.Objects('treasure.png' , {x: 80, y: 30} , {
-    x : gameScene.width - this.width - 48,
-    y : gameScene.height / 2 - this.height / 2,
+      x : gameScene.width - this.width - 48,
+      y : gameScene.height / 2 - this.height / 2,
     }); 
 
   //CREATE ENEMYS :D
   blobs = Dust.Enemy(10 , "blob.png" , {});
 
-  //Create the health bar
-  healthBar = new Container();
-  healthBar.position.set(app.stage.width - 170, 4)
-  gameScene.addChild(healthBar);
+  //Add a healthbar TODO add cusotmizations :D
+  healthBar = Dust.HealthBar();
 
-  //Create the black background rectangle
-  let innerBar = new Graphics();
-  innerBar.beginFill(0x000000);
-  innerBar.drawRect(0, 0, 128, 8);
-  innerBar.endFill();
-  healthBar.addChild(innerBar);
-
-  //Create the front red rectangle
-  let outerBar = new Graphics();
-  outerBar.beginFill(0xFF3300);
-  outerBar.drawRect(0, 0, 128, 8);
-  outerBar.endFill();
-  healthBar.addChild(outerBar);
-
-  healthBar.outer = outerBar;
-
-  //Create the `gameOver` scene
-  gameOverScene = new Container();
-  app.stage.addChild(gameOverScene);
-
-  //Make the `gameOver` scene invisible when the game first starts
-  gameOverScene.visible = false;
+  gameOverScene = Dust.GameOver();
 
   //Create the text sprite and add it to the `gameOver` scene
   let style = new TextStyle({
