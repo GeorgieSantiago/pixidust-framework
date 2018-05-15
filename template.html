@@ -15,7 +15,7 @@
 
 //Put your JSON ALIAS in the Autoloader
 Dust.Autoload([
- 'treasureHunter.json' 
+ 'treasureHunter.json'
 ]);
 
 Dust.Init({
@@ -39,7 +39,7 @@ function setup() {
   /*
    *   Only Supports JSON ATLAS
    */
- //Still working on this one :D 
+ //Still working on this one :D
   id = resources["images/treasureHunter.json"].textures;
 
   //Dungeon
@@ -55,15 +55,15 @@ function setup() {
   explorer = Dust.Player("explorer.png");
 
   //Treasure
-  //This is a full example of the Dust.Objects Method. 
+  //This is a full example of the Dust.Objects Method.
   //The first param is the name of the image, the second is the
   //position, the third are optional properties that are being merged
   //into the PIXI.Sprite object that is returned
   //NOTE (this) is pointing towards the PIXI.Sprite object
-  treasure = Dust.Objects('treasure.png' , {x: 80, y: 30} , {
+  treasure = Dust.Objects('treasure.png' , {x: 580, y: 300} , {
       x : gameScene.width - this.width - 48,
       y : gameScene.height / 2 - this.height / 2,
-    }); 
+    });
 
   //CREATE ENEMYS :D
   blobs = Dust.Enemy(10 , "blob.png" , {});
@@ -73,7 +73,6 @@ function setup() {
 
   gameOverScene = Dust.GameOver();
 
-  //Create the text sprite and add it to the `gameOver` scene
   let style = new TextStyle({
     fontFamily: "Futura",
     fontSize: 64,
@@ -84,6 +83,7 @@ function setup() {
   message.y = app.stage.height / 2 - 32;
   gameOverScene.addChild(message);
 
+/*Keyboard settings TODO Dust this!*/
   //Capture the keyboard arrow keys
   let left = keyboard(37),
       up = keyboard(38),
@@ -147,18 +147,19 @@ function setup() {
 
   //Start the game loop
   app.ticker.add(delta => gameLoop(delta));
+
+  ///////////////////////////////////////////////////////////////
+  ////////////End Of Controller Code
+  ///////////////////////////////////////////////////////////////
 }
 
-
+/*Required PIXI funtions*/
 function gameLoop(delta){
-
-  //Update the current game state:
   state(delta);
 }
 
 function play(delta) {
-
-
+  let count = 0;
   //use the explorer's velocity to make it move
   explorer.x += explorer.vx;
   explorer.y += explorer.vy;
@@ -175,6 +176,7 @@ function play(delta) {
 
     //Move the blob
     blob.y += blob.vy;
+    blob.x += blob.vx;
 
     //Check the blob's screen boundaries
     let blobHitsWall = contain(blob, {x: 28, y: 10, width: 488, height: 480});
@@ -183,6 +185,10 @@ function play(delta) {
     //its direction
     if (blobHitsWall === "top" || blobHitsWall === "bottom") {
       blob.vy *= -1;
+    }
+
+    if (blobHitsWall === "left" || blobHitsWall === "right") {
+      blob.vx *= -1;
     }
 
     //Test for a collision. If any of the enemies are touching
@@ -199,7 +205,7 @@ function play(delta) {
     explorer.alpha = 0.5;
 
     //Reduce the width of the health bar's inner rectangle by 1 pixel
-    healthBar.outer.width -= 1;
+    healthBar.outer.width -= 10;
 
   } else {
 
@@ -228,6 +234,14 @@ function play(delta) {
     state = end;
     message.text = "You won!";
   }
+
+  count++;
+  if(count == count*10)
+  {
+    blobs = Dust.Enemy(5 , "blob.png" , {});
+  }
+  //TODO add to the game loop
+  message.text="Score: " + count;
 }
 
 function end() {
